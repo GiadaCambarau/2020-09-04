@@ -7,7 +7,9 @@ package it.polito.tdp.imdb;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import it.polito.tdp.imdb.model.Miglioer;
 import it.polito.tdp.imdb.model.Model;
+import it.polito.tdp.imdb.model.Movie;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -38,7 +40,7 @@ public class FXMLController {
     private TextField txtRank; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbMovie"
-    private ComboBox<?> cmbMovie; // Value injected by FXMLLoader
+    private ComboBox<Movie> cmbMovie; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtResult"
     private TextArea txtResult; // Value injected by FXMLLoader
@@ -50,12 +52,22 @@ public class FXMLController {
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
-    	
+    	if (txtRank.getText().compareTo("")!=0) {
+    		try {
+    			double r = Double.parseDouble(txtRank.getText());
+    			model.creaGrafo(r);
+    			txtResult.appendText("Vertici: "+ model.getV()+"\n");
+    			txtResult.appendText("Archi: "+ model.getA()+"\n");
+    		}catch(NumberFormatException e ) {
+    			return;
+    		}
+    	}
     }
 
     @FXML
     void doGradoMax(ActionEvent event) {
-    	
+    	Miglioer m = model.getMigliore();
+    	txtResult.appendText(m +"\n");
     }
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
@@ -70,5 +82,6 @@ public class FXMLController {
     
     public void setModel(Model model) {
     	this.model = model;
+    	cmbMovie.getItems().addAll(model.getMovies());
     }
 }
